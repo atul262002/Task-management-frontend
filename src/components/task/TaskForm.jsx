@@ -20,7 +20,7 @@ const TaskForm = () => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        const response = await fetch('https://task-management-backend-k96a.onrender.com/api/auth/all-user');
+        const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/all-user`);
         const data = await response.json();
         if (data.success) {
           setUsers(data.users);
