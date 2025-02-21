@@ -23,13 +23,22 @@ cd Task-management-frontend
 npm install
 ```
 
-### 4️⃣ **Start the Development Server**
+### 4️⃣ **Setup Environment Variables**
+In `.env` file in the root directory and add the following:
+```sh
+VITE_API_URL=http://your-backend-url
+```
+Replace `http://your-backend-url` with your actual backend server URL.
+
+### 5️⃣ **Start the Development Server**
 ```sh
 npm run dev
 ```
 This will start the server and provide a local development URL, typically `http://localhost:5173/`.
 
 ---
+
+
 
 ## 📸 **Screenshots**
 (Add your screenshots below)
@@ -39,6 +48,9 @@ This will start the server and provide a local development URL, typically `http:
 
 ### 📋 Task list Page
 ![Features Page](https://res.cloudinary.com/ddrsppqov/image/upload/v1740097241/Screenshot_from_2025-02-21_03-14-31_kayfbe.png)
+
+### 📋 Add Task Page
+![Features Page](https://res.cloudinary.com/ddrsppqov/image/upload/v1740098403/Screenshot_from_2025-02-21_06-09-47_jcjqma.png)
 
 ---
 
