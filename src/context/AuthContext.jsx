@@ -1,53 +1,51 @@
-import { createContext, useContext, useReducer } from 'react';
-import authService from '../services/authService';
-import setAuthToken from '../utils/setAuthToken';
+import { createContext, useContext, useReducer } from "react";
+import authService from "../services/authService";
+import setAuthToken from "../utils/setAuthToken";
 
 const AuthContext = createContext();
 
 const initialState = {
-  token: localStorage.getItem('token'),
+  token: localStorage.getItem("token"),
   isAuthenticated: false,
   loading: true,
-  user: null,
-  error: null
+  user: {},
+  error: null,
 };
 
 const authReducer = (state, action) => {
   switch (action.type) {
-    case 'USER_LOADED':
+    case "USER_LOADED":
       return {
         ...state,
         isAuthenticated: true,
         loading: false,
-        user: action.payload
+        user: action.payload ,
       };
-    case 'REGISTER_SUCCESS':
-    case 'LOGIN_SUCCESS':
-      localStorage.setItem('token', action.payload.token);
-      setAuthToken(action.payload.token);
+    case "REGISTER_SUCCESS":
+    case "LOGIN_SUCCESS":
       return {
         ...state,
         ...action.payload,
         isAuthenticated: true,
-        loading: false
+        loading: false,
       };
-    case 'AUTH_ERROR':
-    case 'REGISTER_FAIL':
-    case 'LOGIN_FAIL':
-    case 'LOGOUT':
-      localStorage.removeItem('token');
+    case "AUTH_ERROR":
+    case "REGISTER_FAIL":
+    case "LOGIN_FAIL":
+    case "LOGOUT":
+      localStorage.removeItem("token");
       return {
         ...state,
         token: null,
         isAuthenticated: false,
         loading: false,
-        user: null,
-        error: action.payload
+        user: {},
+        error: action.payload,
       };
-    case 'CLEAR_ERROR':
+    case "CLEAR_ERROR":
       return {
         ...state,
-        error: null
+        error: null,
       };
     default:
       return state;
@@ -63,13 +61,13 @@ export const AuthProvider = ({ children }) => {
     try {
       const user = await authService.getCurrentUser();
       dispatch({
-        type: 'USER_LOADED',
-        payload: user
+        type: "USER_LOADED",
+        payload: user,
       });
     } catch (err) {
       dispatch({
-        type: 'AUTH_ERROR',
-        payload: err.message
+        type: "AUTH_ERROR",
+        payload: err.message,
       });
     }
   };
@@ -79,14 +77,14 @@ export const AuthProvider = ({ children }) => {
     try {
       const data = await authService.register(formData);
       dispatch({
-        type: 'REGISTER_SUCCESS',
-        payload: data
+        type: "REGISTER_SUCCESS",
+        payload: data,
       });
       loadUser();
     } catch (err) {
       dispatch({
-        type: 'REGISTER_FAIL',
-        payload: err.message
+        type: "REGISTER_FAIL",
+        payload: err.message,
       });
     }
   };
@@ -95,24 +93,26 @@ export const AuthProvider = ({ children }) => {
   const login = async (formData) => {
     try {
       const data = await authService.login(formData);
+      localStorage.setItem("token", data?.token);
+      await setAuthToken(data?.token);
       dispatch({
-        type: 'LOGIN_SUCCESS',
-        payload: data
+        type: "LOGIN_SUCCESS",
+        payload: data,
       });
-      loadUser();
+      await loadUser();
     } catch (err) {
       dispatch({
-        type: 'LOGIN_FAIL',
-        payload: err.message
+        type: "LOGIN_FAIL",
+        payload: err.message,
       });
     }
   };
 
   // Logout
-  const logout = () => dispatch({ type: 'LOGOUT' });
+  const logout = () => dispatch({ type: "LOGOUT" });
 
   // Clear Errors
-  const clearErrors = () => dispatch({ type: 'CLEAR_ERROR' });
+  const clearErrors = () => dispatch({ type: "CLEAR_ERROR" });
 
   return (
     <AuthContext.Provider
@@ -126,7 +126,7 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         loadUser,
-        clearErrors
+        clearErrors,
       }}
     >
       {children}
